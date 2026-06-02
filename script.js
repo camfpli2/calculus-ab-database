@@ -207,7 +207,7 @@ function setup(){
   hgt=windowHeight;
   wdth=windowWidth;
   createCanvas(wdth-20,hgt-20);
-  background(240);
+  background(250,240,240);
   calcImg=loadImage('calc.png');
   nonCalcImg=loadImage('non-calc.png');
   var unitX=XProp(550);
@@ -376,11 +376,11 @@ function load2008(indexes) {
     for(let i=1;i<indexes.length+1;i++){
       if(indexes[i-1]<=27){
         var f=indexes[i-1]+1;
-        questions.push(loadImage(`2008-NC-${f}.png`));
+        questions.push(loadImage(`2008AB-NC-${f}.png`));
       }
       else{
         var h=indexes[i-1]+48;
-        questions.push(loadImage(`2008-C-${h}.png`));
+        questions.push(loadImage(`2008AB-C-${h}.png`));
       }
     }
 }
@@ -389,11 +389,11 @@ function load2012(indexes) {
     for(let i=1;i<indexes.length+1;i++){
       if(indexes[i-1]<=27){
         var f=indexes[i-1]+1;
-        questions.push(loadImage(`2012-NC-${f}.png`));
+        questions.push(loadImage(`2012AB-NC-${f}.png`));
       }
       else{
         var h=indexes[i-1]+48;
-        questions.push(loadImage(`2012-C-${h}.png`));
+        questions.push(loadImage(`2012AB-C-${h}.png`));
       }
     }
 }
@@ -402,11 +402,11 @@ function load2013(indexes) {
     for(let i=1;i<indexes.length+1;i++){
       if(indexes[i-1]<=27){
         var f=indexes[i-1]+1;
-        questions.push(loadImage(`2013-NC-${f}.png`));
+        questions.push(loadImage(`2013AB-NC-${f}.png`));
       }
       else{
         var h=indexes[i-1]+48;
-        questions.push(loadImage(`2013-C-${h}.png`));
+        questions.push(loadImage(`2013AB-C-${h}.png`));
       }
     }
 }
@@ -415,11 +415,11 @@ function load2014(indexes) {
     for(let i=1;i<indexes.length+1;i++){
       if(indexes[i-1]<=27){
         var f=indexes[i-1]+1;
-        questions.push(loadImage(`2014-NC-${f}.png`));
+        questions.push(loadImage(`2014AB-NC-${f}.png`));
       }
       else{
         var h=indexes[i-1]+48;
-        questions.push(loadImage(`2014-C-${h}.png`));
+        questions.push(loadImage(`2014AB-C-${h}.png`));
       }
     }
 }
@@ -428,11 +428,11 @@ function load2015(indexes) {
     for(let i=1;i<indexes.length+1;i++){
       if(indexes[i-1]<=27){
         var f=indexes[i-1]+1;
-        questions.push(loadImage(`2015-NC-${f}.png`));
+        questions.push(loadImage(`2015AB-NC-${f}.png`));
       }
       else{
         var h=indexes[i-1]+48;
-        questions.push(loadImage(`2015-C-${h}.png`));
+        questions.push(loadImage(`2015AB-C-${h}.png`));
       }
     }
 }
@@ -441,11 +441,11 @@ function load2016(indexes) {
     for(let i=1;i<indexes.length+1;i++){
       if(indexes[i-1]<=27){
         var f=indexes[i-1]+1;
-        questions.push(loadImage(`2016-NC-${f}.png`));
+        questions.push(loadImage(`2016AB-NC-${f}.png`));
       }
       else{
         var h=indexes[i-1]+48;
-        questions.push(loadImage(`2016-C-${h}.png`));
+        questions.push(loadImage(`2016AB-C-${h}.png`));
       }
     }
 }
@@ -454,11 +454,11 @@ function load2017(indexes) {
     for(let i=1;i<indexes.length+1;i++){
       if(indexes[i-1]<=29){                    //because 2017 has 30 Non Calc
         var f=indexes[i-1]+1;
-        questions.push(loadImage(`2017-NC-${f}.png`));
+        questions.push(loadImage(`2017AB-NC-${f}.png`));
       }
       else{
         var h=indexes[i-1]+46;                //because 2017 Calc goes 76-90
-        questions.push(loadImage(`2017-C-${h}.png`));
+        questions.push(loadImage(`2017AB-C-${h}.png`));
       }
     }
 }
@@ -467,11 +467,11 @@ function load2018(indexes) {
     for(let i=1;i<indexes.length+1;i++){
       if(indexes[i-1]<=29){                    
         var f=indexes[i-1]+1;
-        questions.push(loadImage(`2018-NC-${f}.png`));
+        questions.push(loadImage(`2018AB-NC-${f}.png`));
       }
       else{
         var h=indexes[i-1]+46;                
-        questions.push(loadImage(`2018-C-${h}.png`));
+        questions.push(loadImage(`2018AB-C-${h}.png`));
       }
     }
 }
@@ -480,11 +480,11 @@ function load2019(indexes) {
     for(let i=1;i<indexes.length+1;i++){
       if(indexes[i-1]<=29){                    
         var f=indexes[i-1]+1;
-        questions.push(loadImage(`2019-NC-${f}.png`));
+        questions.push(loadImage(`2019AB-NC-${f}.png`));
       }
       else{
         var h=indexes[i-1]+46;                
-        questions.push(loadImage(`2019-C-${h}.png`));
+        questions.push(loadImage(`2019AB-C-${h}.png`));
       }
     }
 }
@@ -494,11 +494,11 @@ function load1998(indexes) {
     for(let i=1;i<indexes.length+1;i++){
       if(indexes[i-1]<=27){                      //because 1998 has 28 Non Calc
         var f=indexes[i-1]+1;
-        questions.push(loadImage(`1998-NC-${f}.png`));
+        questions.push(loadImage(`1998AB-NC-${f}.png`));
       }
       else{
         var h=indexes[i-1]+48;                  //because 1998 Calc goes 76-92
-        questions.push(loadImage(`1998-C-${h}.png`));
+        questions.push(loadImage(`1998AB-C-${h}.png`));
       }
     }
 }
@@ -507,11 +507,11 @@ function load1999(indexes) {
     for(let i=1;i<indexes.length+1;i++){
       if(indexes[i-1]<=27){                      //because 1999 has 28 Non Calc
         var f=indexes[i-1]+1;
-        questions.push(loadImage(`1999-NC-${f}.png`));
+        questions.push(loadImage(`1999AB-NC-${f}.png`));
       }
       else{
         var h=indexes[i-1]+48;                  //because 1999 Calc goes 76-92
-        questions.push(loadImage(`1999-C-${h}.png`));
+        questions.push(loadImage(`1999AB-C-${h}.png`));
       }
     }
 }
