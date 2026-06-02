@@ -1,60 +1,659 @@
-var startx=40;  //starting x
-var dx=80;     //spacing before next x
-var c=8;    //number of columns
-var endx;    //will be calculated in setup
+//each new exam after importing images:   1. var all-exam year    2. var questionIndexes-exam year  3.  another else if on line 40 and 64 and 154
+//                                        4. another load on line 162
+//                                        5. write the load function near line 400      6. update skills using actual program
+  //                                        7. something near line 430
 
-var starty=40;  //starting y
-var dy=80;      //spacing before next y
-var r;      //number of rows is a trivial variable because
-               //the grid populates L -> R
+var wdth;
+var hgt;
+var controls=[];
+var butcolor=[220, 210, 195];
+var selectcolor=[210,225,225];
+var textcolor=[25,55,66];
+var bordercolor=[35,35,200];
+var selectbordercolor=[200,45,35];
+var selectedYear=false;
+var selectedUnit=false;
+var selectedSkill=false;
+var MasterIndexes=[];  //will be indexes of selected questions based on master question archive
+var MasterData=[];    //will be array of arrays in format: [[C/NC, # ofchoices, correct choice], [], []....]
+var whichUnitSelected;
+var questions=[];
+var calcImg;
+var nonCalcImg;
+var choices=[];  //new, i want to make it to allign with questions
+var answers=[];  //new, i want same on this
+var questionIndexes08=[];  // write these in the same order as questionData rows
+var questionIndexes12=[]; var questionIndexes13=[]; var questionIndexes14=[]; var questionIndexes15=[]; var questionIndexes16=[]; var questionIndexes17=[];
+var questionIndexes98=[]; var questionIndexes18=[]; var questionIndexes19=[]; var questionIndexes99=[];
+var n=0;  //current question being shown 
+var data; //.csv with data on entire question bank
+var allYears=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44];
+
+var skillIndexes=[[9,13],[14,23],[24,31],[32,35],[36,40],[41,46],[47,48],[49,50],[51,56]];
+var skillBoxInfo=[[80,300],[150,550],[220,450],[290,250],[360,300],[330,350],[500,130],[570,130],[380,330]];
+var questionData=[];  //array of arrays, format: [year, NC/C, n:number of answer choices, a:answer, skill1, skill2]
+                      //taken from a master csv
+
+function preload(){
+    data=loadTable("calc-data-for-database.csv",".csv");
+
+}
 
 
+function queryUnit(u){
+  for (var y=0;y<questionData.length;y++){
+    if(floor(questionData[y][4])===u||floor(questionData[y][5])===u){      //MasterIndexes is new it will load answers later for the correct questions
+      if(questionData[y][0]===2008){questionIndexes08.push(y); MasterIndexes.push(y);}  //2008 has 45 elements
+      else if(questionData[y][0]===2012){questionIndexes12.push(y-45);MasterIndexes.push(y);}  //2012 has 45 elements (90 cummulative)
+      else if(questionData[y][0]===2013){questionIndexes13.push(y-90);MasterIndexes.push(y);}  //2013 has 45 elements (135 cumulative)
+      else if(questionData[y][0]===2014){questionIndexes14.push(y-135);MasterIndexes.push(y);}  //2014 has 45 elements (180 cumulative)
+      else if(questionData[y][0]===2015){questionIndexes15.push(y-180);MasterIndexes.push(y);}  //2015 has 45 elements (225 cumulative)
+      else if(questionData[y][0]===2016){questionIndexes16.push(y-225);MasterIndexes.push(y);}  //2016 has 45 elements (270 cumulative)
+      else if(questionData[y][0]===2017){questionIndexes17.push(y-270);MasterIndexes.push(y);}  //2017 has 45 elements (315 cumulative)
+      else if(questionData[y][0]===1998){questionIndexes98.push(y-315);MasterIndexes.push(y);}  //1998 has 45 elements (360 cumulative)
+      else if(questionData[y][0]===2018){questionIndexes18.push(y-360);MasterIndexes.push(y);}  //2018 has 45 elements (405 cumulative)
+      else if(questionData[y][0]===2019){questionIndexes19.push(y-405);MasterIndexes.push(y);}  //2019 has 45 elements (450 cumulative)
+      else if(questionData[y][0]===1999){questionIndexes99.push(y-450);MasterIndexes.push(y);}  //1999 has 45 elements (495 cumulative)
+    }    
+  }
+}
+
+function querySkill(s){
+  for (var y=0;y<questionData.length;y++){
+    if(questionData[y][4]===s||questionData[y][5]===s){
+      if(questionData[y][0]===2008){questionIndexes08.push(y);MasterIndexes.push(y);}  //2008 has 45 elements
+      else if(questionData[y][0]===2012){questionIndexes12.push(y-45);MasterIndexes.push(y);}  //2012 has 45 elements (90 cummulative)
+      else if(questionData[y][0]===2013){questionIndexes13.push(y-90);MasterIndexes.push(y);}  //2013 has 45 elements (135 cumulative)
+      else if(questionData[y][0]===2014){questionIndexes14.push(y-135);MasterIndexes.push(y);}  //2014 has 45 elements (180 cumulative)
+      else if(questionData[y][0]===2015){questionIndexes15.push(y-180);MasterIndexes.push(y);}  //2015 has 45 elements (225 cumulative)
+      else if(questionData[y][0]===2016){questionIndexes16.push(y-225);MasterIndexes.push(y);}  //2016 has 45 elements (270 cumulative)
+      else if(questionData[y][0]===2017){questionIndexes17.push(y-270);MasterIndexes.push(y);}  //2017 has 45 elements (315 cumulative)
+      else if(questionData[y][0]===1998){questionIndexes98.push(y-315);MasterIndexes.push(y);}  //1998 has 45 elements (360 cumulative)
+      else if(questionData[y][0]===2018){questionIndexes18.push(y-360);MasterIndexes.push(y);}  //2018 has 45 elements (405 cumulative)
+      else if(questionData[y][0]===2019){questionIndexes19.push(y-405);MasterIndexes.push(y);}  //2019 has 45 elements (450 cumulative)
+      else if(questionData[y][0]===1999){questionIndexes99.push(y-450);MasterIndexes.push(y);}  //1999 has 45 elements (495 cumulative)
+    }    
+  }
+}
+
+function queryYear(y){
+  for(var g=0;g<questionData.length;g++){
+    if(questionData[g][0]===y){
+      MasterIndexes.push(g);
+    }
+  }
+}
+
+function refresher(){
+  background(230);
+  if(MasterData[n][1]===4){controls[82].there=false;}
+  for(var s=0;s<controls.length;s++){
+    controls[s].drawit();
+  }
+
+  fill(240);
+  strokeWeight(1);
+  stroke(bordercolor);
+  rect(5,70,wdth-30,hgt-100,5);
+  image(questions[n],10,80);
+  fill(0);
+  textSize(20);
+  text(n+1+" of "+questions.length,XProp(350),YProp(30));
+  if(MasterData[n][0]==="C"){
+    image(calcImg,XProp(1000),YProp(10),50,50);    
+  }
+  else{
+    image(nonCalcImg,XProp(1000),YProp(10),50,50);
+  }
+
+  
+}
+
+function getQuestionData(){
+  var ii=data.getRowCount();
+  var col0=data.getColumn(0); //year
+  var col1=data.getColumn(1); //NC or C
+  var col2=data.getColumn(2); // # of choices
+  var col3=data.getColumn(3); // correct choice
+  var col4=data.getColumn(4); // relevant unit
+  var col5=data.getColumn(5); // relevant unit #2, 0 if none
+
+  for(var c=0;c<ii;c++){
+    questionData.push([parseInt(col0[c]),col1[c],parseInt(col2[c]),col3[c],parseFloat(col4[c]),parseFloat(col5[c])]);
+  }
+
+
+}
+
+
+function yearHomeScreen(y){
+  background(230);
+  fill(240);
+  strokeWeight(1);
+  stroke(bordercolor);
+  rect(5,70,wdth-30,hgt-100,5);  //main panel
+  controls[77].there=true;  //show start button
+  controls[77].drawit();
+  textSize(40);
+  noStroke();
+  fill(textcolor);
+  textAlign(CENTER);
+  text("AP Calculus BC: "+y,wdth/2,YProp(250));
+  text("Multiple Choice Section",wdth/2,YProp(300));
+  textSize(26);
+  text("1 - 28, No Calculator",wdth/2,YProp(350));
+  text("76 - 92, Calculator",wdth/2,YProp(400));
+}
+
+function wholeSkillHomeScreen(i){
+  background(230);
+  fill(240);
+  strokeWeight(1);
+  stroke(bordercolor);
+  rect(5,70,wdth-30,hgt-100,5);  //main panel
+  controls[77].there=true;  //show start button
+  controls[77].drawit();
+
+  textAlign(CENTER);
+  for(var b=0;b<MasterIndexes.length;b++){  //anytime questions are loaded, the correspnding data should be loaded too
+    MasterData.push([questionData[MasterIndexes[b]][1], questionData[MasterIndexes[b]][2], questionData[MasterIndexes[b]][3]]);
+  }
+  text(MasterData.length+" questions", wdth/2,400);
+
+}
+
+function loadQuestions(ask){   //ask could be "year" , integer, or skill(decimal)
+  if(ask>1000){   //user has clicked a year
+    if(ask===2015){load2015(allYears);}
+    else if(ask===2014){load2014(allYears);}
+    else if(ask===2013){load2013(allYears);}
+    else if(ask===2012){load2012(allYears);}
+    else if(ask===2008){load2008(allYears);}
+    else if(ask===2016){load2016(allYears);}
+    else if(ask===2017){load2017(allYears);}
+    else if(ask===1998){load1998(allYears);}
+    else if(ask===2018){load2018(allYears);}
+    else if(ask===2019){load2019(allYears);}
+    else if(ask===1999){load1999(allYears);}    
+  }
+  else if(Number.isInteger(ask)||ask<12){   //user has clicked an entire unit
+    load2008(questionIndexes08);
+    load2012(questionIndexes12);
+    load2013(questionIndexes13);
+    load2014(questionIndexes14);
+    load2015(questionIndexes15);
+    load2016(questionIndexes16);
+    load2017(questionIndexes17);
+    load1998(questionIndexes98);
+    load2018(questionIndexes18);
+    load2019(questionIndexes19);
+    load1999(questionIndexes99);
+  }
+
+}
+
+function XProp(xORw){
+  var newOne;
+  newOne=map(xORw,0,1470,0,wdth);
+  return newOne;
+}
+function YProp(yORh){
+  var newOne;
+  newOne=map(yORh,0,831,0,hgt);
+  return newOne;
+}
 
 function setup(){
-  var x;
-  var y;
+  hgt=windowHeight;
+  wdth=windowWidth;
+  createCanvas(wdth-20,hgt-20);
+  background(240);
+  calcImg=loadImage('calc.png');
+  nonCalcImg=loadImage('non-calc.png');
+  var unitX=XProp(550);
+  var unitW=XProp(400);
+  var unitH=YProp(60);
+
+  controls.push(new control(unitX,80,unitW,unitH,"Unit 1: Limits and Continuity",true,butcolor,0));
+  controls.push(new control(unitX,150,unitW,unitH,"Unit 2: Derivatives",true,butcolor,1));
+  controls.push(new control(unitX,220,unitW,unitH,"Unit 3: Applications of the Derivative",true,butcolor,2));
+  controls.push(new control(unitX,290,unitW,unitH,"Unit 4: Integration",true,butcolor,3));
+  controls.push(new control(unitX,360,unitW,unitH,"Unit 5: Differential Equations",true,butcolor,4));
+  controls.push(new control(unitX,430,unitW,unitH,"Unit 6: Applications of Integration",true,butcolor,5));
+  controls.push(new control(unitX,500,unitW,unitH,"Unit 7: Parametric Equations",true,butcolor,6));
+  controls.push(new control(unitX,570,unitW,unitH,"Unit 8: Polar Equations",true,butcolor,7));
+  controls.push(new control(unitX,640,unitW,unitH,"Unit 9: Sequences and Series",true,butcolor,8));   //all unit indexes are 0 thru 8
+
+  var skillX=XProp(1000);
+  var skillW=XProp(360);
+  var skillH=YProp(40);
+  controls.push(new control(skillX,100,skillW,skillH,"1.1 Limits and Continuity",false,butcolor,9));  //unit 1 , index 9 thru 13
+  controls.push(new control(skillX,150,skillW,skillH,"1.2 Properties of Limits",false,butcolor,10));
+  controls.push(new control(skillX,200,skillW,skillH,"1.3 Limits at Infinity",false,butcolor,11));
+  controls.push(new control(skillX,250,skillW,skillH,"1.4 Algebraic Limits",false,butcolor,12));
+  controls.push(new control(skillX,300,skillW,skillH,"1.5 Continuity and the IVT",false,butcolor,13));
   
-  endx=(c)*dx;
-  createCanvas(1000,600);
-  background(129,30,70);
+  controls.push(new control(skillX,170,skillW,skillH,"2.1 Tangent Line & Differentiability",false,butcolor,14));  //unit2, index 14 thru 23
+  controls.push(new control(skillX,220,skillW,skillH,"2.2 Derivatives on the Calculator",false,butcolor,15));
+  controls.push(new control(skillX,270,skillW,skillH,"2.3 Basic Differentiation Rules",false,butcolor,16));
+  controls.push(new control(skillX,320,skillW,skillH,"2.4 Product & Quotient Rules",false,butcolor,17));
+  controls.push(new control(skillX,370,skillW,skillH,"2.5 Rates of Change and Particle Motion I",false,butcolor,18));
+  controls.push(new control(skillX,420,skillW,skillH,"2.6 The Chain Rule",false,butcolor,19));
+  controls.push(new control(skillX,470,skillW,skillH,"2.7 Implicit Differentiation",false,butcolor,20));
+  controls.push(new control(skillX,520,skillW,skillH,"2.8 Derivatives of Inverse & Inverse Trig Functions",false,butcolor,21));
+  controls.push(new control(skillX,570,skillW,skillH,"2.9 Derivatives of Exponential Functions",false,butcolor,22));
+  controls.push(new control(skillX,620,skillW,skillH,"2.10 Derivatives of Log Functions",false,butcolor,23));
+
+  controls.push(new control(skillX,240,skillW,skillH,"3.1 Extrema on an interval",false,butcolor,24));   //unit 3, index 24 tru 31
+  controls.push(new control(skillX,290,skillW,skillH,"3.2 Rolle's Theorem and the MVT",false,butcolor,25));   
+  controls.push(new control(skillX,340,skillW,skillH,"3.3 Increasing, Decreasing, and 1st Derivative Test",false,butcolor,26));   
+  controls.push(new control(skillX,390,skillW,skillH,"3.4 Concavity and the Second Derivative Test",false,butcolor,27));   
+  controls.push(new control(skillX,440,skillW,skillH,"3.5 Graphs of Derivatives",false,butcolor,28));   
+  controls.push(new control(skillX,490,skillW,skillH,"3.6 Optimization",false,butcolor,29));   
+  controls.push(new control(skillX,540,skillW,skillH,"3.7 Linearization and Differentials",false,butcolor,30));   
+  controls.push(new control(skillX,590,360,40,"3.8 Related Rates",false,butcolor,31));   
+
+  controls.push(new control(skillX,310,skillW,skillH,"4.1 Antiderivatives and Indefinite Integration",false,butcolor,32));   //unit 4, index 32 thru 35
+  controls.push(new control(skillX,360,skillW,skillH,"4.2 Numeric Definite Integrals",false,butcolor,33));
+  controls.push(new control(skillX,410,skillW,skillH,"4.3 The Fundamental Theorem Of Calculus I & II and MVT II",false,butcolor,34));
+  controls.push(new control(skillX,460,skillW,skillH,"4.4 Integration by u-Substitution",false,butcolor,35));
+
+  controls.push(new control(skillX,380,skillW,skillH,"5.1 Separable Differential Equations",false,butcolor,36));   //unit 5, index 36 thru 40
+  controls.push(new control(skillX,430,skillW,skillH,"5.2 Slope Fields",false,butcolor,37));
+  controls.push(new control(skillX,480,skillW,skillH,"5.3 Euler's Method",false,butcolor,38));
+  controls.push(new control(skillX,530,skillW,skillH,"5.4 Integration by Parts",false,butcolor,39));
+  controls.push(new control(skillX,580,skillW,skillH,"5.5 Partial Fractions & Logistic Growth ",false,butcolor,40));
+
+  controls.push(new control(skillX,350,skillW,skillH,"6.1 Integral as Net Change",false,butcolor,41));   //unit 6, index 41 thru 46
+  controls.push(new control(skillX,400,skillW,skillH,"6.2 Area between Curves",false,butcolor,42));
+  controls.push(new control(skillX,450,skillW,skillH,"6.3 Volumes",false,butcolor,43));
+  controls.push(new control(skillX,500,skillW,skillH,"6.4 Arc Length",false,butcolor,44));
+  controls.push(new control(skillX,550,skillW,skillH,"6.5 L'Hôpital's Rule and Indeterminate Forms",false,butcolor,45));
+  controls.push(new control(skillX,600,skillW,skillH,"6.6 Improper Integrals",false,butcolor,46));
+
+  controls.push(new control(skillX,520,skillW,skillH,"7.1 Intro to Parametric & Vector Calculus",false,butcolor,47));   //unit 7, index 47 thru 48
+  controls.push(new control(skillX,570,skillW,skillH,"7.2 Parametric & Vector Accumulation",false,butcolor,48));
+
+  controls.push(new control(skillX,590,skillW,skillH,"8.1 Polar Intro & Derivatives",false,butcolor,49));   //unit 8, index 49 thru 50
+  controls.push(new control(skillX,640,skillW,skillH,"8.2 Polar Area",false,butcolor,50));
+
+  controls.push(new control(skillX,400,skillW,skillH,"9.1 Infinite Sequences & Series",false,butcolor,51));   //unit 9, index 51 thru 56
+  controls.push(new control(skillX,450,skillW,skillH,"9.2 Taylor Polynomials",false,butcolor,52));
+  controls.push(new control(skillX,500,skillW,skillH,"9.3 Power Series I: Taylor & Maclaurin Series",false,butcolor,53));
+  controls.push(new control(skillX,550,skillW,skillH,"9.4 Power Series II: Geometric Series",false,butcolor,54));
+  controls.push(new control(skillX,600,skillW,skillH,"9.5 Lagrange Error Bound",false,butcolor,55));
+  controls.push(new control(skillX,650,skillW,skillH,"9.6",false,butcolor,56));                            //all sub-skills will always be index 9 thru 56
+  var yearX1=XProp(80);
+  var yearX2=XProp(250);
+  var yearW=XProp(120);
+  var yearH=unitH;
+  controls.push(new control(yearX1,80,yearW,yearH,"1996",true,butcolor,"year"));  //indexes 57 thru 65
+  controls.push(new control(yearX1,150,yearW,yearH,"1997",true,butcolor,"year"));
+  controls.push(new control(yearX1,220,yearW,yearH,"1998",true,butcolor,"year"));
+  controls.push(new control(yearX1,290,yearW,yearH,"1999",true,butcolor,"year"));
+  controls.push(new control(yearX1,360,yearW,yearH,"2006",true,butcolor,"year"));
+  controls.push(new control(yearX1,430,yearW,yearH,"2007",true,butcolor,"year"));
+  controls.push(new control(yearX1,500,yearW,yearH,"2008",true,butcolor,"year"));
+  controls.push(new control(yearX1,570,yearW,yearH,"2009",true,butcolor,"year"));
+  controls.push(new control(yearX1,640,yearW,yearH,"2010",true,butcolor,"year"));
+
+
+  controls.push(new control(yearX2,80,yearW,yearH,"2011",true,butcolor,"year"));  //indexes 66 thru 74
+  controls.push(new control(yearX2,150,yearW,yearH,"2012",true,butcolor,"year"));
+  controls.push(new control(yearX2,220,yearW,yearH,"2013",true,butcolor,"year"));
+  controls.push(new control(yearX2,290,yearW,yearH,"2014",true,butcolor,"year"));
+  controls.push(new control(yearX2,360,yearW,yearH,"2015",true,butcolor,"year"));
+  controls.push(new control(yearX2,430,yearW,yearH,"2016",true,butcolor,"year"));
+  controls.push(new control(yearX2,500,yearW,yearH,"2017",true,butcolor,"year"));
+  controls.push(new control(yearX2,570,yearW,yearH,"2018",true,butcolor,"year"));
+  controls.push(new control(yearX2,640,yearW,yearH,"2019",true,butcolor,"year"));
+
+  var topButtonY=YProp(5);
+  var topButtonW=yearW;
+  var topButtonH=yearH;
+  controls.push(new control(XProp(5),topButtonY,topButtonW,topButtonH,"Previous",false,butcolor,"exam controller"));  //index 75
+  controls.push(new control(XProp(135),topButtonY,topButtonW,topButtonH,"Next",false,butcolor,"exam controller"));     //index 76
+  controls.push(new control(XProp(265),topButtonY,topButtonW,topButtonH,"Start",false,butcolor,"exam controller"));  //index 77
   
-  for(var n=0; n<29; n++){
-    x=startx + ((n*dx) % endx);
-    y=starty + dy*floor(n/c);
-    console.log(n,x,y);
-    fill(255);
-    rect(x,y,78,78,9);  //could be anything, this proves rows and columns are correctly spaced
-  }
-  }
+  var answerChoiceStartX=XProp(500);
+  controls.push(new control(answerChoiceStartX,topButtonY,60,60,"A",false,butcolor,"answer choice"));  //index 78 thru 82
+  controls.push(new control(answerChoiceStartX+70,topButtonY,60,60,"B",false,butcolor,"answer choice"));
+  controls.push(new control(answerChoiceStartX+140,topButtonY,60,60,"C",false,butcolor,"answer choice"));
+  controls.push(new control(answerChoiceStartX+210,topButtonY,60,60,"D",false,butcolor,"answer choice"));
+  controls.push(new control(answerChoiceStartX+280,topButtonY,60,60,"E",false,butcolor,"answer choice"));
+  getQuestionData();
+  homeScreen();
+}
 
-
-
-
-function draw(){
-
-  
-  }
-
-
-
-
-function touchStarted(){
-  
-  
+function homeScreen(){
+    background(230);
+    fill(240);
+    stroke(bordercolor);
+    strokeWeight(1);
+    rect(XProp(10),YProp(10),XProp(490),YProp(710),5);
+    rect(XProp(520),YProp(10),XProp(890),YProp(710),5);
+    textSize(26);
+    noStroke();
+    fill(textcolor);
+    textAlign(LEFT,CENTER);
+    text("Multiple Choice Complete Sections",XProp(50),YProp(50));
+    text("Practice By Unit",XProp(600),YProp(50));  //change later to be a percent of window width
+    //text("Practice By Skill",1000,50);  //same as above
+     for(var y=0;y<controls.length;y++){
+      controls[y].drawit();
+   }
 }
 
 
-function touchEnded(){
-  
-  
+
+
+
+
+function touchEnded() {
+    for(var g=0;g<controls.length;g++){
+    controls[g].tapit();
+  }
+  return false;
+}
+
+function adjustImageDimensions(){
+  for(var v=0;v<questions.length;v++){
+    if((questions[v].width>wdth-40)||(questions[v].height>hgt-130)){      //too tall or too wide
+      if(questions[v].width/(wdth-40)>questions[v].height/(hgt-130)){    //%wise, wider than taller
+         questions[v].resize(wdth-40,0);
+      }
+      else{                                               //%wise, taller than wider
+         questions[v].resize(0,hgt-130);
+      }
+    }
+  }
 }
 
 
 
+
+function load2008(indexes) {
+    for(let i=1;i<indexes.length+1;i++){
+      if(indexes[i-1]<=27){
+        var f=indexes[i-1]+1;
+        questions.push(loadImage(`2008-NC-${f}.png`));
+      }
+      else{
+        var h=indexes[i-1]+48;
+        questions.push(loadImage(`2008-C-${h}.png`));
+      }
+    }
+}
+
+function load2012(indexes) {
+    for(let i=1;i<indexes.length+1;i++){
+      if(indexes[i-1]<=27){
+        var f=indexes[i-1]+1;
+        questions.push(loadImage(`2012-NC-${f}.png`));
+      }
+      else{
+        var h=indexes[i-1]+48;
+        questions.push(loadImage(`2012-C-${h}.png`));
+      }
+    }
+}
+
+function load2013(indexes) {
+    for(let i=1;i<indexes.length+1;i++){
+      if(indexes[i-1]<=27){
+        var f=indexes[i-1]+1;
+        questions.push(loadImage(`2013-NC-${f}.png`));
+      }
+      else{
+        var h=indexes[i-1]+48;
+        questions.push(loadImage(`2013-C-${h}.png`));
+      }
+    }
+}
+
+function load2014(indexes) {
+    for(let i=1;i<indexes.length+1;i++){
+      if(indexes[i-1]<=27){
+        var f=indexes[i-1]+1;
+        questions.push(loadImage(`2014-NC-${f}.png`));
+      }
+      else{
+        var h=indexes[i-1]+48;
+        questions.push(loadImage(`2014-C-${h}.png`));
+      }
+    }
+}
+
+function load2015(indexes) {
+    for(let i=1;i<indexes.length+1;i++){
+      if(indexes[i-1]<=27){
+        var f=indexes[i-1]+1;
+        questions.push(loadImage(`2015-NC-${f}.png`));
+      }
+      else{
+        var h=indexes[i-1]+48;
+        questions.push(loadImage(`2015-C-${h}.png`));
+      }
+    }
+}
+
+function load2016(indexes) {
+    for(let i=1;i<indexes.length+1;i++){
+      if(indexes[i-1]<=27){
+        var f=indexes[i-1]+1;
+        questions.push(loadImage(`2016-NC-${f}.png`));
+      }
+      else{
+        var h=indexes[i-1]+48;
+        questions.push(loadImage(`2016-C-${h}.png`));
+      }
+    }
+}
+
+function load2017(indexes) {
+    for(let i=1;i<indexes.length+1;i++){
+      if(indexes[i-1]<=29){                    //because 2017 has 30 Non Calc
+        var f=indexes[i-1]+1;
+        questions.push(loadImage(`2017-NC-${f}.png`));
+      }
+      else{
+        var h=indexes[i-1]+46;                //because 2017 Calc goes 76-90
+        questions.push(loadImage(`2017-C-${h}.png`));
+      }
+    }
+}
+
+function load2018(indexes) {
+    for(let i=1;i<indexes.length+1;i++){
+      if(indexes[i-1]<=29){                    
+        var f=indexes[i-1]+1;
+        questions.push(loadImage(`2018-NC-${f}.png`));
+      }
+      else{
+        var h=indexes[i-1]+46;                
+        questions.push(loadImage(`2018-C-${h}.png`));
+      }
+    }
+}
+
+function load2019(indexes) {
+    for(let i=1;i<indexes.length+1;i++){
+      if(indexes[i-1]<=29){                    
+        var f=indexes[i-1]+1;
+        questions.push(loadImage(`2019-NC-${f}.png`));
+      }
+      else{
+        var h=indexes[i-1]+46;                
+        questions.push(loadImage(`2019-C-${h}.png`));
+      }
+    }
+}
+
+
+function load1998(indexes) {
+    for(let i=1;i<indexes.length+1;i++){
+      if(indexes[i-1]<=27){                      //because 1998 has 28 Non Calc
+        var f=indexes[i-1]+1;
+        questions.push(loadImage(`1998-NC-${f}.png`));
+      }
+      else{
+        var h=indexes[i-1]+48;                  //because 1998 Calc goes 76-92
+        questions.push(loadImage(`1998-C-${h}.png`));
+      }
+    }
+}
+
+function load1999(indexes) {
+    for(let i=1;i<indexes.length+1;i++){
+      if(indexes[i-1]<=27){                      //because 1999 has 28 Non Calc
+        var f=indexes[i-1]+1;
+        questions.push(loadImage(`1999-NC-${f}.png`));
+      }
+      else{
+        var h=indexes[i-1]+48;                  //because 1999 Calc goes 76-92
+        questions.push(loadImage(`1999-C-${h}.png`));
+      }
+    }
+}
+
+
+function activateUnit(ind){
+  for(var g=skillIndexes[ind][0];g<=skillIndexes[ind][1];g++){
+    controls[g].there=true;
+    controls[g].rgb=selectcolor;
+    controls[ind].rgb=selectcolor;
+  }
+}
+
+class control{
+  constructor(x,y,w,h,txt,there,rgb,ind){
+    this.x=x; this.y=y; this.w=w; this.h=h; this.txt=txt; this.there=there; this.rgb=rgb; this.ind=ind;
+    if(ind!="year"){this.loaded=true;}
+    if(txt==="1998"||txt==="2003"||txt==="2008"||txt==="2012"||txt==="2013"||txt==="2014"||txt==="2015"||txt==="2016"||txt==="2017"||txt==="2018"||txt==="2019"||txt==="1999"){
+      this.loaded=true;    //you'll see the text of the exams loaded, not for others
+    }
+  }
   
+  tapit(){
+    if(mouseX>=this.x && mouseX<=this.x+this.w && mouseY>=this.y && mouseY <= this.y+this.h && this.there){
+      if(this.ind<=8){                  // user clicks a unit
+        if(this.rgb===selectcolor){              //user has d-clicked and this will bypass to whole skill mix
+          for(var b=0;b<controls.length;b++){   //resets button colors and makes them not there
+            controls[b].rgb=butcolor;
+            controls[b].there=false;
+          }
+          whichUnitSelected=this.ind+1;
+          selectedUnit=true;
+          queryUnit(this.ind+1);
+          loadQuestions(whichUnitSelected);
+          wholeSkillHomeScreen(this.ind);
+        }
+          
+        else{                          //user selects a unit for 1st time
+        for(var k=0;k<9;k++){
+          controls[k].rgb=butcolor;
+        }
+        for(var h=9;h<=56;h++){
+          controls[h].there=false;
+        }
+        activateUnit(this.ind);  
+        homeScreen();
+        fill(240);
+        stroke(selectbordercolor);
+        strokeWeight(2);
+        rect(this.x+this.w+XProp(30),YProp(skillBoxInfo[this.ind][0]),XProp(400),YProp(skillBoxInfo[this.ind][1]),2);
+        for(var y=0;y<controls.length;y++){
+            controls[y].drawit();
+         }
+        fill(this.rgb);
+        noStroke();
+        triangle(this.x+this.w-2,this.y,this.x+this.w-2,this.y+this.h,this.x+this.w+XProp(30),this.y+this.h/2);
+        stroke(selectbordercolor);
+        strokeWeight(2);
+        line(this.x+this.w-2,this.y,this.x+this.w+XProp(30),this.y+this.h/2);
+        line(this.x+this.w-2,this.y+this.h,this.x+this.w+XProp(30),this.y+this.h/2);
+        }
+      }
 
+      else if(this.ind<=56){     //user clicks a sub-skill i.e 5.3, 9.1
+                                  // remember 2.10 is in question data as 2.11
+        var each=[1.1,1.2,1.3,1.4,1.5,2.1,2.2,2.3,2.4,2.5,2.6,2.7,2.8,2.9,2.11,3.1,3.2,3.3,3.4,3.5,3.6,3.7,3.8,4.1,4.2,4.3,4.4,5.1,5.2,5.3,5.4,5.5,6.1,6.2,6.3,6.4,6.5,6.6,7.1,7.2,8.1,8.2,9.1,9.2,9.3,9.4,9.5,9.6];
+        whichUnitSelected=each[this.ind-9];
+        for(var f=0;f<controls.length;f++){
+          controls[f].there=false;
+        }
+        selectedSkill=true;
+        querySkill(whichUnitSelected);
+        loadQuestions(whichUnitSelected);
+        wholeSkillHomeScreen(whichUnitSelected);
+      }
 
+      else if(this.ind==="year"){    //user clicks a year
+        queryYear(parseInt(this.txt));
+        for(var f=0;f<controls.length;f++){
+          controls[f].there=false;
+        }
+        selectedYear=true;
+        loadQuestions(parseInt(this.txt));
+        for(var b=0;b<MasterIndexes.length;b++){     //anytime questions are loaded, the correspnding data should be loaded too
+          MasterData.push([questionData[MasterIndexes[b]][1], questionData[MasterIndexes[b]][2], questionData[MasterIndexes[b]][3]]);
+        }
+        yearHomeScreen(parseInt(this.txt));
+      }  
 
-
-
-
+      
+      else if(this.txt==="Next"){
+        n++;
+        for(var b=78;b<=82;b++){controls[b].rgb=butcolor;}
+        refresher();
+      }
+      else if(this.txt==="Previous"){
+        n--;
+        for(var b=78;b<=82;b++){controls[b].rgb=butcolor;}
+        refresher();
+      }
+        
+      else if(this.txt==="Start"){
+        for(var k=0;k<controls.length;k++){
+          if(controls[k].ind==="exam controller"||controls[k].ind==="answer choice"){
+            controls[k].there=true
+          }
+        }
+        this.there=false;
+        adjustImageDimensions();
+        refresher();
+      }
+      else if(this.ind === "answer choice"){  
+        if(MasterData[n][2]===this.txt){
+          this.rgb=[45,220,70];
+        }
+        else{
+          this.rgb=[220,45,70];
+        }
+        refresher();
+      }
+    }
+  }     //end of tapit method
+  
+  drawit(){
+    if(this.there){
+      fill(this.rgb);
+      stroke(25, 45, 100);
+      strokeWeight(2);
+      rect(this.x, this.y, this.w, this.h, 4);
+      if(this.loaded===true){fill(0,0,200);}
+      noStroke();
+      if(this.ind>=9&&this.ind<=56){textSize(15);}
+      else if(this.ind==="answer choice"){textSize(44);}
+      else{textSize(20);}
+      if(this.ind==="year"||this.ind==="exam controller"||this.ind==="answer choice"){
+        textAlign(CENTER,CENTER);
+        text(this.txt,this.x+this.w/2, this.y+this.h/2);
+      }
+      else{
+        textAlign(LEFT,CENTER);
+        text(this.txt,this.x+10, this.y+this.h/2);
+      }
+    }
+  }
+}
