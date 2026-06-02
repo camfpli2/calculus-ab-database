@@ -35,7 +35,7 @@ var questionData=[];  //array of arrays, format: [year, NC/C, n:number of answer
                       //taken from a master csv
 
 function preload(){
-    data=loadTable("calc-data-for-database.csv",".csv");
+    //data=loadTable("calc-data-for-database.csv",".csv");
 
 }
 
