@@ -313,7 +313,7 @@ function setup(){
   controls.push(new control(answerChoiceStartX+140,topButtonY,60,60,"C",false,butcolor,"answer choice"));
   controls.push(new control(answerChoiceStartX+210,topButtonY,60,60,"D",false,butcolor,"answer choice"));
   controls.push(new control(answerChoiceStartX+280,topButtonY,60,60,"E",false,butcolor,"answer choice"));
-  //getQuestionData();
+  getQuestionData();
   homeScreen();
 }
 
