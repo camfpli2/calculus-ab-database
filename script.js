@@ -43,17 +43,15 @@ function preload(){
 function queryUnit(u){
   for (var y=0;y<questionData.length;y++){
     if(floor(questionData[y][4])===u||floor(questionData[y][5])===u){      //MasterIndexes is new it will load answers later for the correct questions
-      if(questionData[y][0]===2008){questionIndexes08.push(y); MasterIndexes.push(y);}  //2008 has 45 elements
+      if(questionData[y][0]===2008){questionIndexes08.push(y); MasterIndexes.push(y);}  //each exam has 45 elements
       else if(questionData[y][0]===2012){questionIndexes12.push(y-45);MasterIndexes.push(y);}  //2012 has 45 elements (90 cummulative)
       else if(questionData[y][0]===2013){questionIndexes13.push(y-90);MasterIndexes.push(y);}  //2013 has 45 elements (135 cumulative)
       else if(questionData[y][0]===2014){questionIndexes14.push(y-135);MasterIndexes.push(y);}  //2014 has 45 elements (180 cumulative)
       else if(questionData[y][0]===2015){questionIndexes15.push(y-180);MasterIndexes.push(y);}  //2015 has 45 elements (225 cumulative)
       else if(questionData[y][0]===2016){questionIndexes16.push(y-225);MasterIndexes.push(y);}  //2016 has 45 elements (270 cumulative)
       else if(questionData[y][0]===2017){questionIndexes17.push(y-270);MasterIndexes.push(y);}  //2017 has 45 elements (315 cumulative)
-      else if(questionData[y][0]===1998){questionIndexes98.push(y-315);MasterIndexes.push(y);}  //1998 has 45 elements (360 cumulative)
-      else if(questionData[y][0]===2018){questionIndexes18.push(y-360);MasterIndexes.push(y);}  //2018 has 45 elements (405 cumulative)
-      else if(questionData[y][0]===2019){questionIndexes19.push(y-405);MasterIndexes.push(y);}  //2019 has 45 elements (450 cumulative)
-      else if(questionData[y][0]===1999){questionIndexes99.push(y-450);MasterIndexes.push(y);}  //1999 has 45 elements (495 cumulative)
+      else if(questionData[y][0]===2018){questionIndexes98.push(y-315);MasterIndexes.push(y);}  //2018 has 45 elements (360 cumulative)
+      else if(questionData[y][0]===2019){questionIndexes18.push(y-360);MasterIndexes.push(y);}  //2019 has 45 elements (405 cumulative)
     }    
   }
 }
@@ -68,10 +66,8 @@ function querySkill(s){
       else if(questionData[y][0]===2015){questionIndexes15.push(y-180);MasterIndexes.push(y);}  //2015 has 45 elements (225 cumulative)
       else if(questionData[y][0]===2016){questionIndexes16.push(y-225);MasterIndexes.push(y);}  //2016 has 45 elements (270 cumulative)
       else if(questionData[y][0]===2017){questionIndexes17.push(y-270);MasterIndexes.push(y);}  //2017 has 45 elements (315 cumulative)
-      else if(questionData[y][0]===1998){questionIndexes98.push(y-315);MasterIndexes.push(y);}  //1998 has 45 elements (360 cumulative)
-      else if(questionData[y][0]===2018){questionIndexes18.push(y-360);MasterIndexes.push(y);}  //2018 has 45 elements (405 cumulative)
-      else if(questionData[y][0]===2019){questionIndexes19.push(y-405);MasterIndexes.push(y);}  //2019 has 45 elements (450 cumulative)
-      else if(questionData[y][0]===1999){questionIndexes99.push(y-450);MasterIndexes.push(y);}  //1999 has 45 elements (495 cumulative)
+      else if(questionData[y][0]===2018){questionIndexes98.push(y-315);MasterIndexes.push(y);}  //2018 has 45 elements (360 cumulative)
+      else if(questionData[y][0]===2019){questionIndexes18.push(y-360);MasterIndexes.push(y);}  //2019 has 45 elements (405 cumulative)
     }    
   }
 }
@@ -171,10 +167,8 @@ function loadQuestions(ask){   //ask could be "year" , integer, or skill(decimal
     else if(ask===2008){load2008(allYears);}
     else if(ask===2016){load2016(allYears);}
     else if(ask===2017){load2017(allYears);}
-    else if(ask===1998){load1998(allYears);}
     else if(ask===2018){load2018(allYears);}
-    else if(ask===2019){load2019(allYears);}
-    else if(ask===1999){load1999(allYears);}    
+    else if(ask===2019){load2019(allYears);}   
   }
   else if(Number.isInteger(ask)||ask<12){   //user has clicked an entire unit
     load2008(questionIndexes08);
@@ -184,10 +178,8 @@ function loadQuestions(ask){   //ask could be "year" , integer, or skill(decimal
     load2015(questionIndexes15);
     load2016(questionIndexes16);
     load2017(questionIndexes17);
-    load1998(questionIndexes98);
     load2018(questionIndexes18);
     load2019(questionIndexes19);
-    load1999(questionIndexes99);
   }
 
 }
