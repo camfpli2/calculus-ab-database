@@ -200,8 +200,8 @@ function setup(){
   wdth=windowWidth;
   createCanvas(wdth-20,hgt-20);
   background(250,240,240);
-  //calcImg=loadImage('calc.png');
-  //nonCalcImg=loadImage('non-calc.png');
+  calcImg=loadImage('calc.png');
+  nonCalcImg=loadImage('non-calc.png');
   var unitX=XProp(550);
   var unitW=XProp(400);
   var unitH=YProp(60);
